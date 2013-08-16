@@ -1,6 +1,7 @@
 name(interpolate).
 version('0.0.1').
 title('').
+requires(function_expansion).
 author('Michael Hendricks','michael@ndrix.org').
 packager('Michael Hendricks','michael@ndrix.org').
 maintainer('Michael Hendricks','michael@ndrix.org').
