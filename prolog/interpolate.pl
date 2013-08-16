@@ -1,6 +1,7 @@
 :- module(interpolate, ['$interpolate_macro_sentinel'/0]).
 :- use_module(library(dcg/basics), [prolog_var_name//1, string//1]).
 :- use_module(library(function_expansion)).
+:- use_module(library(error), [type_error/2]).
 
 %%	Template(+Vars:pairs, -Formats:list, -Args:list)//
 %
@@ -8,7 +9,7 @@
 %   is a list of atoms that can be joined together to
 %   create the first argument of format/2. Args are values for the
 %   second.
-template(Vars, [Static,'~p'|Formats], [Arg|Args]) -->
+template(Vars, [Static,_|Formats], [Arg|Args]) -->
     string(Codes),
     variable(VarName),
     { memberchk(VarName=Arg, Vars) },
@@ -44,6 +45,10 @@ wants_interpolation :-
 %%	textual(-Type:atom, +Text, -Codes)
 %
 %	True if Text is of type Type and representable as Codes.
+textual(_,Var,_) :-
+    var(Var),
+    !,
+    fail.
 textual(atom, Atom, Codes) :-
     atom(Atom),
     !,
@@ -65,6 +70,39 @@ textual(string, String, Codes) :-
     string_to_list(String,Codes).
 
 
+%%	build_text(?Output, ?Formats:list, ?Args:list)
+%
+%   Like format/3 but dynamically chooses tilde sequences to match the
+%   values in Args.
+build_text(Output, Formats0, Args) :-
+    instantiate_formats(Formats0, Args, Formats),
+    atomic_list_concat(Formats, Format),
+    format(Output, Format, Args).
+
+
+% choose format tilde sequences for a list of values
+instantiate_formats([], _, []).
+instantiate_formats([Static|Formats0],Args,[Static|Formats]) :-
+    atom(Static),
+    !,
+    instantiate_formats(Formats0,Args,Formats).
+instantiate_formats([Var|Formats0],[Arg|Args],[Format|Formats]) :-
+    var(Var),
+    !,
+    preferred_tilde(Arg,Format),
+    instantiate_formats(Formats0,Args,Formats).
+instantiate_formats([X|_],_,[_|_]) :-
+    type_error(atom_or_var,X).
+
+
+% Which format/2 tilde sequence does a value prefer?
+preferred_tilde(X,'~s') :-
+    textual(Type, X, _),
+    ( Type = codes; Type = chars ),
+    !.
+preferred_tilde(_,'~p').
+
+
 :- multifile user:function_expansion/3.
 user:function_expansion(Term,Replacement,Guard) :-
     wants_interpolation,
@@ -77,9 +115,8 @@ user:function_expansion(Term,Replacement,Guard) :-
     Args \== [],  % no args means no interpolation
 
     % yup, so perform the expansion
-    atomic_list_concat(Formats, Format),
     Output =.. [Type, Replacement],
-    Guard = format(Output, Format, Args).
+    Guard = interpolate:build_text(Output, Formats, Args).
 
 
 %%	'$interpolate_macro_sentinel'.
