@@ -121,10 +121,12 @@ user:function_expansion(Term,Replacement,Guard) :-
 
 %%	'$interpolate_macro_sentinel'.
 %
-%	Implementation detail to avoid unwanted string interpolation.
-%   Because string interpolation is implemented as a macro and macro
-%   expansion is done through a predicate with gloabl reach
-%   (term_expansion/2), we must take steps to avoid performing string
-%   interpolation on code that doesn't want it. Importing this predicate
-%   opts-in to string interpolation.
+%   Nothing to see here. This is an implementation detail to avoid
+%   unwanted string interpolation. Because string interpolation is
+%   implemented as a macro and macro expansion is done through a
+%   predicate with gloabl reach (user:term_expansion/2), we must take
+%   precautions to avoid performing string interpolation on code that
+%   doesn't want it. Importing this predicate opts-in to string
+%   interpolation. Writing `use_module(library(interpolate))` does it
+%   for you.
 '$interpolate_macro_sentinel'.
