@@ -4,7 +4,6 @@
 % strings.  So we have to either disable singleton detection, mark each
 % variable as a singleton or use the variable twice.
 :- style_check(-singleton).
-:- set_prolog_flag(backquoted_string, true).
 
 :- use_module(library(tap)).
 
@@ -25,7 +24,7 @@
     atom(Message).
 
 'money amounts are not interpolations' :-
-    Message = `That will be $3.27, please`,
+    Message = "That will be $3.27, please",
     string(Message).
 
 'interpolating numbers' :-
