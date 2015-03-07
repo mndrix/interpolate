@@ -98,7 +98,7 @@ instantiate_formats([X|_],_,[_|_]) :-
 % Which format/2 tilde sequence does a value prefer?
 preferred_tilde(X,'~s') :-
     textual(Type, X, _),
-    ( Type = codes; Type = chars ),
+    ( Type = codes; Type = chars; Type = string ),
     !.
 preferred_tilde(_,'~p').
 
