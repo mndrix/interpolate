@@ -38,7 +38,7 @@ may generate a warning.
 
 Because interpolation hides variables inside of strings, the compiler
 can't detect that they're being used.  This often results in unwanted
-singleton warnings.  You can some choices in how to resolve the
+singleton warnings.  You have some choices in how to resolve the
 problem:
 
   * prefix the affected variable with an underscore
