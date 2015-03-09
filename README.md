@@ -48,10 +48,6 @@ problem:
 Once I add quasiquotation support to this module, that will be
 another option.
 
-# Changes in this Version
-
-    * First public release
-
 # Installation
 
 Using SWI-Prolog 7.1.1 or later:
