@@ -54,7 +54,7 @@ another option.
 
 # Installation
 
-Using SWI-Prolog 6.5.1 or later:
+Using SWI-Prolog 7.1.1 or later:
 
     ?- pack_install(interpolate).
 
